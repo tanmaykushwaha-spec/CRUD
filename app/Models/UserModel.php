@@ -22,4 +22,14 @@ class UserModel extends Model
         'nationality',
         'blood_group',
     ];
+
+    public function getAllUserDetails(): array 
+    {
+        $sql = 'SELECT id, email, name, phone_no, address, age, nationality, blood_group 
+                FROM user_details
+                ORDER BY id ASC';
+        
+        $query = $this->db->query($sql);
+        return $query->getResultArray();
+    }
 }

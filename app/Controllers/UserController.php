@@ -29,8 +29,9 @@ class UserController extends BaseController
             return $redirect;
         }
 
+        $users = $this->userModel->getAllUserDetails();
         return view('users/userinfo', [
-            'users' => $this->userModel->findAll(),
+            'users' => $users,
         ]);
     }
 }
