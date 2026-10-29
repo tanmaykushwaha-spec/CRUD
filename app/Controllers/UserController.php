@@ -22,7 +22,7 @@ class UserController extends BaseController
         return null;
     }
 
-    public function index()
+    public function getinfo()
     {
        
         if ($redirect = $this->requireLogin()) {
