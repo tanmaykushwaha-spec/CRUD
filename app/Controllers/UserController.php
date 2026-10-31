@@ -149,8 +149,9 @@ class UserController extends BaseController
         }
 
         // 6. Redirect to the table with a success message.
-        return redirect()->to(site_url('userinfo'))
-            ->with('success', 'User added successfully.');
+        session()->setFlashdata('success', 'User added successfully.');
+
+        return redirect()->to(site_url('userinfo'));
         }
 
     public function edit($id)
@@ -277,8 +278,9 @@ class UserController extends BaseController
               ->with('error', 'Unable to update the user . Please try again');
         }
 
-        return redirect()->to(site_url('userinfo'))
-            ->with('success', 'User edited successfully');
+        session()->setFlashdata('success', 'User edited successfully.');
+
+        return redirect()->to(site_url('userinfo'));
 
 
     }

@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>User Information</title>
+    <style>
+        .success-message {
+            color: green;
+            transition: opacity 400ms ease;
+        }
+
+        .success-message.is-hidden {
+            opacity: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .success-message {
+                transition: none;
+            }
+        }
+    </style>
 </head>
 <body>
     <h2>User Information</h2>
 
     <?php if ($message = session()->getFlashdata('success')): ?>
-        <p style="color: green;">
+        <p id="success-message" class="success-message" role="status" aria-live="polite">
         <?= esc($message) ?>
         </p>
     <?php endif; ?>
@@ -59,5 +75,16 @@
             <?php endif; ?>
         </tbody>
     </table>
+
+    <script>
+        const successMessage = document.getElementById('success-message');
+
+        if (successMessage) {
+            window.setTimeout(() => {
+                successMessage.classList.add('is-hidden');
+                window.setTimeout(() => successMessage.remove(), 400);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
