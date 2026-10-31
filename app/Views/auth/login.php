@@ -105,7 +105,7 @@ $passwordError = $passwordError ?? ($validationErrors['password'] ?? null);
 
     <script>
         $(function () {
-            const $form = $('#loginForm');
+            const $form = $('#loginForm'); 
             const $email = $('#email');
             const $password = $('#password');
             const $button = $('#loginButton');
