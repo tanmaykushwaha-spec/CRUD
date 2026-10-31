@@ -8,7 +8,9 @@
     <h2>User Information</h2>
 
     <?php if ($message = session()->getFlashdata('success')): ?>
-        <p><?= esc($message) ?></p>
+        <p style="color: green;">
+        <?= esc($message) ?>
+        </p>
     <?php endif; ?>
 
     <p>
@@ -49,7 +51,7 @@
                         <td><?= esc($user['nationality']) ?></td>
                         <td><?= esc($user['blood_group']) ?></td>
                         <td>
-                            <button type="button" disabled>Edit</button>
+                            <a href="<?= site_url('users/edit/' . $user['id']) ?>">Edit</a>
                             <button type="button" disabled>Delete</button>
                         </td>
                     </tr>
