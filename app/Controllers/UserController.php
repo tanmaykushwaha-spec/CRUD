@@ -140,7 +140,7 @@ class UserController extends BaseController
         ];
 
         // 5. Insert the new record into the database.
-        if (! $userModel->insert ($data)) {
+        if (! $userModel->insertUser($data)) {
             log_message('error', 'Failed to insert a user: ' . json_encode($userModel->errors()));
 
             return redirect()->to(site_url('users/new'))
@@ -161,7 +161,7 @@ class UserController extends BaseController
 
         }
 
-         $user = $this->userModel->find($id);
+         $user = $this->userModel->getUserById($id);
 
          if (!$user) {
             return redirect() ->to(site_url('userinfo'))
@@ -180,7 +180,7 @@ class UserController extends BaseController
             return $redirect;
         }
 
-        $user = $this->userModel->find($id);
+        $user = $this->userModel->getUserById($id);
 
         if(!$user){
             return redirect()->to(site_url('userinfo'))
@@ -270,7 +270,7 @@ class UserController extends BaseController
             );
         }
 
-        if (!$this->userModel->update($id, $data)) {
+        if (!$this->userModel->updateUser($id, $data)) {
             log_message('error', 'user update failed: ' . json_encode($this->userModel->errors()));
 
             return redirect()->to(site_url('users/edit/' . $id))
@@ -305,7 +305,7 @@ class UserController extends BaseController
             ])->setStatusCode(404);
         }
 
-        if(!$userModel->delete($id)){
+        if(!$userModel->deleteUserById($id)){
             log_message('error', 'Failed to delete user Id:'. $id);
 
             return $this->response->setJSON([

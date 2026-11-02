@@ -32,4 +32,104 @@ class UserModel extends Model
         $query = $this->db->query($sql);
         return $query->getResultArray();
     }
+
+    public function getUserById($id)
+    {
+        $sql = "SELECT*
+                FROM user_details
+                WHERE id = ?";
+        $query = $this->db->query($sql, [$id]);
+
+        return $query->getRowArray();
+    }
+    
+    public function insertUser(array $data)
+    {
+        $sql = "INSERT INTO user_details
+                 (name, email, password, phone_no, address, age, nationality, blood_group)
+                  VALUES (?,?,?,?,?,?,?,?)";
+        
+        $this->db->query($sql,[
+            $data['name'],
+            $data['email'],
+            $data['password'],
+            $data['phone_no'],
+            $data['address'],
+            $data['nationality'],
+            $data['blood_group']
+        ]);
+
+        if($this->db->affectedRows() > 0){
+            return $this->db->insertID();
+        }
+
+        return false;
+    }
+
+    public function updateUser($id, array $data)
+    {
+        $sql = "UPDATE user_details
+                SET 
+                    name = ?,
+                    email = ?,
+                    phone_no = ?,
+                    address = ?,
+                    age = ?,
+                    nationality = ?,
+                    blood_group = ?,
+                WHERE id = ?";
+        
+        $params = [
+            $data['name'],
+            $data['email'],
+            $data['phone_no'],
+            $data['address'],
+            $data['age'],
+            $data['nationality'],
+            $data['blood_group'],
+            $id
+        ];
+
+        if (isset($data['password'])){
+
+           $sql = "UPDATE user_details
+                   SET 
+                       name = ?,
+                       email = ?,
+                       password = ?,
+                       phone_no = ?,
+                       address = ?,
+                       age = ?,
+                       nationality = ?,
+                       blood_group = ?
+                   WHERE id =?";
+            
+           $params = [
+               $data['name'],
+               $data['email'],
+               $data['password'],
+               $data['phone_no'],
+               $data['address'],
+               $data['age'],
+               $data['nationality'],
+               $data['blood_group'],
+               $id
+           ];
+            
+        }
+          
+        $this->db->query($sql, $params);
+
+        return $this->db->affectedRows() > 0;
+
+    }
+
+    public function deleteUserById($id)
+    {
+        $sql = "DELETE FROM user_details
+                WHERE id = ?";
+        $this->db->query($sql,[$id]);
+
+        return $this->db->affectedRows() > 0;
+    }
 }
