@@ -55,6 +55,7 @@ class UserModel extends Model
             $data['password'],
             $data['phone_no'],
             $data['address'],
+            $data['age'],
             $data['nationality'],
             $data['blood_group']
         ]);
@@ -66,7 +67,7 @@ class UserModel extends Model
         return false;
     }
 
-    public function updateUser($id, array $data)
+    public function updateUser($id, array $data, $updatedBy)
     {
         $sql = "UPDATE user_details
                 SET 
@@ -77,6 +78,8 @@ class UserModel extends Model
                     age = ?,
                     nationality = ?,
                     blood_group = ?,
+                    update_date = CURRENT_TIMESTAMP,
+                    updated_by = ?
                 WHERE id = ?";
         
         $params = [
@@ -87,6 +90,7 @@ class UserModel extends Model
             $data['age'],
             $data['nationality'],
             $data['blood_group'],
+            $updatedBy,
             $id
         ];
 
@@ -101,7 +105,9 @@ class UserModel extends Model
                        address = ?,
                        age = ?,
                        nationality = ?,
-                       blood_group = ?
+                       blood_group = ?,
+                       update_date = CURRENT_TIMESTAMP,
+                       updated_by = ?
                    WHERE id =?";
             
            $params = [
@@ -113,6 +119,7 @@ class UserModel extends Model
                $data['age'],
                $data['nationality'],
                $data['blood_group'],
+               $updatedBy,
                $id
            ];
             

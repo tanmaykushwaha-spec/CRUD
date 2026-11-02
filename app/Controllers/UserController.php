@@ -270,7 +270,9 @@ class UserController extends BaseController
             );
         }
 
-        if (!$this->userModel->updateUser($id, $data)) {
+        $updatedBy = session()->get('user_id');
+
+        if (!$this->userModel->updateUser($id, $data, $updatedBy)) {
             log_message('error', 'user update failed: ' . json_encode($this->userModel->errors()));
 
             return redirect()->to(site_url('users/edit/' . $id))
