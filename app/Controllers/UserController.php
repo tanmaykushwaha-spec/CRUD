@@ -314,6 +314,8 @@ class UserController extends BaseController
             ])->setStatusCode(500);
         }
 
+        session()->setFlashdata('success', 'User deleted successfully.');
+
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'User deleted successfully.',

@@ -7,12 +7,29 @@
     <meta name="csrf-hash" content="<?=  csrf_hash() ?>">
     <style>
         .success-message {
+            display: inline-block;
             color: green;
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 4px;
+            padding: 10px 14px;
             transition: opacity 400ms ease;
         }
 
         .success-message.is-hidden {
             opacity: 0;
+        }
+
+        .action-button {
+            display: inline-block;
+            padding: 2px 6px;
+            border: 1px solid #767676;
+            border-radius: 2px;
+            background-color: #efefef;
+            color: #000;
+            font: inherit;
+            text-decoration: none;
+            cursor: pointer;
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -25,7 +42,7 @@
 <body>
     <h2>User Information</h2>
 
-    <div id="ajax-message"></div>"
+    <div id="ajax-message" role="alert" aria-live="polite"></div>
 
     <?php if ($message = session()->getFlashdata('success')): ?>
         <p id="success-message" class="success-message" role="status" aria-live="polite">
@@ -34,9 +51,8 @@
     <?php endif; ?>
 
     <p>
-        <a href="<?= site_url('users/new') ?>">Add</a>
-        |
-        <a href="<?= site_url('logout') ?>">Logout</a>
+        <a class="action-button" href="<?= site_url('users/new') ?>">Add</a>
+        <a class="action-button" href="<?= site_url('logout') ?>">Logout</a>
     </p>
 
     <table border="1" cellpadding="6" cellspacing="0">
@@ -71,10 +87,10 @@
                         <td><?= esc($user['nationality']) ?></td>
                         <td><?= esc($user['blood_group']) ?></td>
                         <td>
-                            <a href="<?= site_url('users/edit/' . $user['id']) ?>">Edit</a>
-                            <button type="button" 
-                                    class="delete-btn"
-                                    data-id="<?=  esc($user['id']) ?>"
+                            <a class="action-button" href="<?= site_url('users/edit/' . $user['id']) ?>">Edit</a>
+                            <button type="button"
+                                    class="action-button delete-btn"
+                                    data-id="<?= esc($user['id']) ?>">
                                 Delete
                             </button>
                         </td>
@@ -94,9 +110,6 @@
 
                 // Get the ID from the clicked Delete button.
                 let userId = $(this).data('id');
-
-                // Keep a reference to the current table row.
-                let row = $(this).closest('tr');
 
                 // Ask for confirmation before deleting.
                 if (!confirm('Are you sure you want to delete this user?')) {
@@ -124,14 +137,7 @@
                         }
 
                         if (response.status === 'success') {
-
-                            // Remove the deleted user's row.
-                            row.remove();
-
-                            // Display the success message.
-                            $('#ajax-message')
-                                .css('color', 'green')
-                                .text(response.message);
+                            window.location.reload();
 
                         } else {
 
