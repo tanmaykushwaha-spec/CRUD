@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>User Information</title>
+    <meta name="csrf-name" content="<?=  csrf_token() ?>">
+    <meta name="csrf-hash" content="<?=  csrf_hash() ?>">
     <style>
         .success-message {
             color: green;
@@ -22,6 +24,8 @@
 </head>
 <body>
     <h2>User Information</h2>
+
+    <div id="ajax-message"></div>"
 
     <?php if ($message = session()->getFlashdata('success')): ?>
         <p id="success-message" class="success-message" role="status" aria-live="polite">
@@ -68,13 +72,98 @@
                         <td><?= esc($user['blood_group']) ?></td>
                         <td>
                             <a href="<?= site_url('users/edit/' . $user['id']) ?>">Edit</a>
-                            <button type="button" disabled>Delete</button>
+                            <button type="button" 
+                                    class="delete-btn"
+                                    data-id="<?=  esc($user['id']) ?>"
+                                Delete
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
         </tbody>
     </table>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    
+    <script>
+        $(document).ready(function () {
+
+            $('.delete-btn').on('click', function () {
+
+                // Get the ID from the clicked Delete button.
+                let userId = $(this).data('id');
+
+                // Keep a reference to the current table row.
+                let row = $(this).closest('tr');
+
+                // Ask for confirmation before deleting.
+                if (!confirm('Are you sure you want to delete this user?')) {
+                    return;
+                }
+
+                // Read the current CSRF token.
+                let csrfName = $('meta[name="csrf-name"]').attr('content');
+                let csrfHash = $('meta[name="csrf-hash"]').attr('content');
+
+                // Prepare the AJAX request data.
+                let requestData = {};
+                requestData[csrfName] = csrfHash;
+
+                // Send the request to CodeIgniter.
+                $.ajax({
+                    url: "<?= site_url('users/delete/') ?>" + userId,
+                    type: "POST",
+                    data: requestData,
+
+                    success: function (response) {
+
+                        if (response.csrfHash) {
+                            $('meta[name="csrf-hash"]').attr('content', response.csrfHash);
+                        }
+
+                        if (response.status === 'success') {
+
+                            // Remove the deleted user's row.
+                            row.remove();
+
+                            // Display the success message.
+                            $('#ajax-message')
+                                .css('color', 'green')
+                                .text(response.message);
+
+                        } else {
+
+                            $('#ajax-message')
+                                .css('color', 'red')
+                                .text(response.message);
+                        }
+                    },
+
+                    error: function (xhr) {
+
+                        if (xhr.responseJSON && xhr.responseJSON.csrfHash) {
+                            $('meta[name="csrf-hash"]').attr('content', xhr.responseJSON.csrfHash);
+                        }
+
+                        let message = 'Something went wrong. Please try again.';
+
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+
+                        $('#ajax-message')
+                            .css('color', 'red')
+                            .text(message);
+                    }
+                });
+
+            });
+
+        });
+    </script>
+
 
     <script>
         const successMessage = document.getElementById('success-message');

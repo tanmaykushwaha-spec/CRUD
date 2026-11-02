@@ -285,6 +285,43 @@ class UserController extends BaseController
 
     }
 
+    public function delete($id)
+    {
+        if ($redirect = $this->requireLogin()){
+            return $this->response->setJson([
+                'status' => 'error',
+                'message'=> 'You must be logged in to delete a user.',
+            ])->setStatusCode(401);
+        }
+
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($id);
+
+        if(!$user){
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'User not found.',
+                'csrfHash' => csrf_hash()
+            ])->setStatusCode(404);
+        }
+
+        if(!$userModel->delete($id)){
+            log_message('error', 'Failed to delete user Id:'. $id);
+
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Unable to delete the user. Please try again.',
+            ])->setStatusCode(500);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'message' => 'User deleted successfully.',
+            'id' => (int) $id,
+            'csrfHash' => csrf_hash()
+        ]);
+    }
+
 
     
 }
